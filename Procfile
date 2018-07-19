@@ -1,0 +1,1 @@
+web: python run.py -p 5000 runserver

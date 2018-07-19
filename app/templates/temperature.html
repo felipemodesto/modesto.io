@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% set active_page = "monitor" %}
+{% block header %}
+  <link href="http://vjs.zencdn.net/5.17.0/video-js.css" rel="stylesheet">
+
+  <!-- If you'd like to support IE8 -->
+  <script src="http://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="container-fluid">
+  	<row><br></row>
+  	<row>
+	  	<div class="col-md-12">
+	  		<div class="army-skill">
+		  		<div class="vertical-center">
+		  			<!--
+					<video id="my-video" class="video-js" controls preload="auto" width="858" height="480" poster="none.png" data-setup="{}">
+						<p class="vjs-no-js">
+							To view this video please enable JavaScript, and consider upgrading to a web browser that
+							<a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+						</p>
+					</video>
+					<script src="http://vjs.zencdn.net/5.17.0/video.js"></script>
+					-->
+					<iframe width="350" height="450" src="https://twine.cc/00002f2ea91e18af/widget/?access_key=0096bd53ca1fbc1c63c8fb0a5a4b"  allowfullscreen frameborder="0"></iframe>
+				</div>
+			</div>
+		</div>
+	</row>
+  	<row><br></row>
+  </div>
+
+{% endblock %}

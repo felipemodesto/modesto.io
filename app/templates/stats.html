@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% set active_page = "stats" %}
+{% block header %}
+
+<style>
+  #title_section {
+    margin : 20px 20px;
+  }
+  .table td {
+    text-align: center;   
+  }
+</style>
+
+{% if ipList %}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+    var data = google.visualization.arrayToDataTable([
+      		['Visit Count', 'Index'],
+			{% for client in ipList %}
+				[ {{ client.index }} , {{ client.accessCount }}],
+			{% endfor %}
+      ]);
+
+      var options = {
+        title: 'Visit Frequency Graph',
+        hAxis: {title: 'Visitor Index'},
+        vAxis: {title: 'Access Count'},
+        legend: 'none',
+        trendlines: { 0: {} },
+        backgroundColor: { fill:'#dff0d8' }
+      };
+
+  var chart = new google.visualization.ScatterChart(document.getElementById('chart_div'));
+  chart.draw(data, options);
+}
+</script>
+{% endif %}
+
+{% endblock %}
+
+{% block content %}
+  <div class="container-fluid">
+  	<row><br></row>
+  	<row>
+	  	<div class="col-md-12">
+	  		<div class="army-skill">
+					{% if ipList %}
+	  			        <row>
+                		<h1>Visitor IP List</h1>
+                		<hr style="border-color: #000000">
+                		<br>
+	  			        </row>
+	  			        <row>
+				          <div class="col-md-2">
+				          </div>
+				          <div class="col-md-8 text-center">
+				            <div id="chart_div"></div>
+				            <br>
+    						<table class="table table-bordered">
+								<thead class="thead-inverse">
+								<tr>
+								<th class="text-center bg-warning">Index</th>
+								<th class="text-center bg-success">IP</th>
+								<th class="text-center bg-success">Access Count</th>
+								</tr>
+								</thead>
+						        <tbody>
+									{% for client in ipList %}
+										<tr>
+											<td class="col-md-1 text-center bg-warning">{{ client.index }}</td>
+											<td class="col-md-1 text-center bg-warning">{{ client.ip }}</td>
+											<td class="col-md-2 text-center bg-success">{{ client.accessCount }}</td>
+										</tr>
+									{% endfor %}
+						        </tbody>
+						    </table>
+				          </div>
+				          <div class="col-md-2">
+				          </div>
+				        </row>
+      				{% endif %}
+			</div>
+		</div>
+	</row>
+  	<row><br></row>
+  </div>
+
+{% endblock %}

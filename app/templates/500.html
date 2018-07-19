@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% set active_page = "" %}
+{% block header %}
+{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+  	<row><br></row>
+  	<row><br></row>
+  	<row><br></row>
+  	<row>
+  	<div class="col-md-3"></div>
+      <div class="col-md-6">
+		  <h1>Error 500 - Internal server "Error"</h1>
+		  <p>
+        What is an error? It's a fancy new feature currently in beta as far as we know.
+      </p>
+		  <p>
+        <strong>If you're curious about what's going on, here is what we know: </strong>
+        <br>
+        {% if error %} {{ error }} {% else %}No Error Message. :/{% endif %}
+      </p>
+	  </div>
+  	<div class="col-md-3"></div>
+	</row>
+  </div>
+
+{% endblock %}

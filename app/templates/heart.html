@@ -1,0 +1,28 @@
+{% set active_page = "heart" %}
+{% block header %}
+
+<style>
+	h1 {
+		text-align: center;
+		color: purple;
+		font-size: 80px;
+		font-family: Sans-serif;
+	}
+</style>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+	//Script para atualizar o heartrate puxando um novo get do servidor
+	function refresh(){
+		window.location.reload(true); 
+	}
+
+	setTimeout(refresh, 1000);
+</script>
+{% endblock %}
+
+{% block content %}
+{% if heartRate %}
+	<h1 id="rate"><img src="/heart_icon.png" class="center-block" alt="Heartbeat Monitor" style="width:80px">  {{heartRate}} bpm</h1>
+{% endif %}
+{% endblock %}

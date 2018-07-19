@@ -1,0 +1,646 @@
+{% extends "base.html" %}
+{% set active_page = "index" %}
+{% block header %}
+  <script>
+    (function($){
+     $.fn.shuffle = function() {
+      var allElems = this.get(),
+          getRandom = function(max) {
+              return Math.floor(Math.random() * max);
+          },
+          shuffled = $.map(allElems, function(){
+              var random = getRandom(allElems.length),
+                  randEl = $(allElems[random]).clone(true)[0];
+              allElems.splice(random, 1);
+              return randEl;
+         });
+      this.each(function(i){
+          $(this).replaceWith($(shuffled[i]));
+      });
+      return $(shuffled);
+    }; 
+    })(jQuery);
+  </script>
+
+  <script>
+    $(document).ready(function(){
+      $( '#q0 label' ).shuffle();
+      $( '#q1 label' ).shuffle();
+      $( '#q2 label' ).shuffle();
+      $( '#q3 label' ).shuffle();
+      $( '#q4 label' ).shuffle();
+      $( '#q5 label' ).shuffle();
+    });
+  </script>
+
+  <script>
+    function questionConfirmed(e, button) {
+      
+      //Getting Button that was pressed
+      var selectButton = $(e)
+      selectButton.prop('disabled',true);
+
+      var aggregatedText = '#' + button + ' input:radio'
+
+      //Figuring if the associated checkbox list has a selected item
+      var selectedRadio = $(aggregatedText + ':checked')
+      if (selectedRadio.val() == null) {
+        alert("Please make a selection." + aggregatedText)
+        return;
+      }
+
+      //Checking its status and changing things appropriately
+      if (selectedRadio.val() == "wrong") {
+        selectButton.addClass(" btn-danger disabled btn-disabled");
+
+        selectedRadio.parent().addClass(" text-danger");
+        selectedRadio.parent().text("Incorrect");
+      } else {
+        console.log("Nice Job!");
+        selectButton.addClass(" btn-success disabled btn-disabled");
+
+        selectedRadio.parent().addClass(" text-success");
+        selectedRadio.parent().text("Correct");
+      }
+
+      //Iterating through remaining options to disable them
+      var allRadios = $(aggregatedText)
+      for (i = 0; i < allRadios.length; i++) {
+        //allRadios[i].parent().addClass(" disabled");
+      }
+    }
+  </script>
+
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12 col-xs-12">
+      <div id="rightcol">
+        <section>
+          <div class="row">
+            <div class="army-skill col-xs-12 skill_zero">
+              <div class="vertical-center-skill">
+                <h1>Instructions</h1>
+                <hr style="border-color: #000000">
+                <br>
+                <p style="text-align: : center">This is a sample of the proposed minute-test based programming evaluation. The questions in this "minute" exam are generated procedurally.</p>
+                <br>
+                <div class="container-fluid">
+                  <h1>Demo Question</h1>
+                  <hr style="border-color: #000000">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      This is a sample question, One can see how its components are generated randomly by reloading the webpage.
+                      <br>
+                      THE TEXT DESCRIPTION FOR THE QUESTION GOES HERE.
+                    </div>
+                    <div class="panel-body">
+                      THE SOURCE CODE GOES HERE
+                    </div>
+                    <div class="panel-heading">
+                      <b>Output: </b> OUTPUT NOTE GOES HERE
+                    </div>
+                    <div class="panel-heading">
+                      REQUEST FOR ANSWER GOES HERE
+                    </div>
+                    <div class="panel-body">
+                      <table class="table" id="q0">
+                        <tr>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="correct">Option 01 (Correct)</label>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="wrong">Option 02</label>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="wrong">Option 03</label>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="wrong">Option 04</label>
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
+                      <button type="button" class="btn"  onclick="questionConfirmed(this,'q0')">Confirm</button>
+                    </div>
+                  </div>
+                </div>
+                <br>
+                <p style="text-align: : center;"><i>To navigate, please scroll down.</i></p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <section>
+          {% set randomValue = range(0, 100) | random  %}
+          {% if randomValue == 50 %}
+            {% set randomValue = 49 %}
+          {% endif %}
+          <div class="row">
+            <div class="army-skill col-xs-12 skill_one">
+              <div class="vertical-center-skill">
+                <div class="container-fluid">
+                  <!--
+                  <h1>Question 01</h1>
+                  <hr style="border-color: #000000">
+                  -->
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      Please review the code below and, based on its execution, answer the following question. The variable in blue represents the object considered during the evaluation.
+                      <br><br>
+                      <i>Note:</i> This first example does not employ dynamic generation as it evaluates the basic understanding of a concept.
+                    </div>
+                    <div class="panel-body">
+                      <b>int</b> <var>minGrade</var> = <var>50</var>
+                      <br>
+                      <b>int</b> <var style="color: #0000FF">studentGrade</var> = <var> 50 </var>
+                      <br>
+                      <b>if</b> <emph  style="color: #FF0000">(...)</emph> {
+                      <br>
+                      &emsp;<b>print</b>("The student has <var style="color: #FF0000">failed</var> the course")
+                      <br>
+                      } <b>else</b> {
+                      <br>
+                      &emsp;<b>print</b>("The student has <var style="color: #FF0000">passed</var> the course")
+                      <br>
+                      }
+                    </div>
+                    <div class="panel-heading">
+                      <b>Output: </b> <i>"The <var  style="color: #0000FF">student</var> has</i> <var style="color: #FF0000">failed</var> the course<i>"</i> 
+                    </div>
+                    <div class="panel-heading">
+                      Please select the line of code that leads to grades being treated correctly.
+                    </div>
+                    <div class="panel-body">
+                      <table class="table" id="q1">
+                        <tr>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="correct">if ( <var style="color: #0000FF">studentGrade</var> =< <var>minGrade</var> ) {</label>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="wrong">if ( <var style="color: #0000FF">studentGrade</var> > <var>minGrade</var> ) {</label>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="wrong">if ( <var style="color: #0000FF">studentGrade</var> != <var>minGrade</var> ) {</label>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="wrong">if ( <var style="color: #0000FF">studentGrade</var> - <var>minGrade</var> > 0 ) {</label>
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
+                      <button id="btn01" type="button" class="btn" onclick="questionConfirmed(this,'q1')">Confirm</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <section>
+          {% set randomValue = range(2, 6) | random  %}
+          <div class="row">
+            <div class="army-skill col-xs-12 skill_zero">
+              <div class="vertical-center-skill">
+                <div class="container-fluid">
+                  <!--
+                  <h1>Question 02</h1>
+                  <hr style="border-color: #000000">
+                  -->
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      Please review the code below, and based on its execution, answer the following question. The variable in blue represents the object considered during the evaluation.
+                      The section in red represents the portion of code that needs to be filled by one of the answers.
+                      <br><br>
+                      <i>Note:</i> This example question measures if a student can follow the behavior of a simple while loop.
+                    </div>
+                    <div class="panel-body">
+                      <b>int</b> <var>loopCount</var> = <var>{{randomValue}}</var>
+                      <br>
+                      <b>int</b> <var style="color: #0000FF">output</var> = <var>-1</var>
+                      <br>
+                      <b>int</b> <var style="color: #FF0000">count</var> = <var>0</var>
+                      <br>
+                      <b>while</b> ( <var style="color: #FF0000">count</var> < <var>loopCount</var> ) {
+                      <br>
+                      &emsp;<var style="color: #FF0000">count</var> = <var style="color: #FF0000">count</var> + <var>1</var>
+                      <br>
+                      &emsp;<var style="color: #0000FF">output</var> = <var>-</var> <var style="color: #0000FF">output</var>
+                      <br>
+                      }
+                      <br>
+                      &emsp;<b>print</b>("The output value is " + <var style="color: #0000FF">output</var> )
+                    </div>
+                    <div class="panel-heading">
+                      <b>Output: </b> "The output value is <var style="color: #0000FF">X</var> "
+                    </div>
+                    <div class="panel-heading">
+                      Please select the option that corresponds to the correct value of X as output by the print function.
+                    </div>
+                    <div class="panel-body">
+                      <table class="table" id="q2">
+                        <tr>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="correct">
+                              {% if randomValue % 2 == 0 %}
+                              X = -1
+                              {% else %}
+                              X = 1
+                              {% endif %}
+                              </label>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="wrong">
+                              {% if randomValue % 2 == 0 %}
+                              X = 1
+                              {% else %}
+                              X = -1
+                              {% endif %}
+                              </label>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="wrong">X = 2</label>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="wrong">X = 0</label>
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
+                      <button type="button" class="btn"  onclick="questionConfirmed(this,'q2')">Confirm</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <section>
+          {% set randomValue = range(2, 10) | random  %}
+          {% set sum = 1/2 * randomValue * (randomValue + 1)  %}
+          <div class="row">
+            <div class="army-skill col-xs-12 skill_one">
+              <div class="vertical-center-skill">
+                <div class="container-fluid">
+                  <!--
+                  <h1>Question 03</h1>
+                  <hr style="border-color: #000000">
+                  -->
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      Please review the code below, and based on its execution, answer the following question. The variable in blue represents the object considered during the evaluation.
+                      <br><br>
+                      <i>Note:</i> This example question measures if a student can follow the behavior of a for loop with calculations being performed inside it.
+                    </div>
+                    <div class="panel-body">
+                      <b>int</b> <var style="color: #0000FF">sum</var> = <var>0</var>
+                      <br>
+                      <b>int</b> <var style="color: #FF0000">factor</var> = <var>{{ randomValue }}</var>
+                      <br>
+                      <br>
+                      <b>for</b> (<b>int</b> <var>i</var> = <var>1</var> ; <var>i</var> <= <var style="color: #FF0000">factor</var> ; <var>i++</var>) {
+                      <br>
+                      &emsp;<var  style="color: #0000FF">sum</var> += <var style="color: #FF0000">factor</var> * <var>i</var>
+                      <br>
+                      }
+                      <br>
+                      <b>print</b>( "The sum value is " + <var  style="color: #0000FF">sum</var> )
+                    </div>
+                    <div class="panel-heading">
+                      <b>Output: </b> <i>"The sum value is</i> <var style="color: #0000FF">X</var> <i>"</i> 
+                    </div>
+                    <div class="panel-heading">
+                      Please select the option that corresponds to the correct value of <var style="color: #0000FF">X</var> as output by the print function.
+                    </div>
+                    <div class="panel-body">
+                      <table class="table" id="q3">
+                        <tr>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="correct"><var style="color: #0000FF">X</var> = {{ sum }}</label>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="wrong"><var style="color: #0000FF">X</var> = {{ sum/2 }}</label>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="wrong"><var style="color: #0000FF">X</var> = {{ sum + 7}}</label>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="wrong"><var style="color: #0000FF">X</var> = {{ sum - 2 }}</label>
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
+                      <button type="button" class="btn"  onclick="questionConfirmed(this,'q3')">Confirm</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <section>
+          {% set randomValue = range(4, 7) | random  %}
+          {% set boolVariable = range(0,2) | random  %}
+          <div class="row">
+            <div class="army-skill col-xs-12 skill_zero">
+              <div class="vertical-center-skill">
+                <div class="container-fluid">
+                  <!--
+                  <h1>Question 04</h1>
+                  <hr style="border-color: #000000">
+                  -->
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      Please review the functional code below and, based on the requirements listed, answer the following question.
+                      <br><br>
+                      <i>Note:</i> This question displays a set of requirements and asks students to design code that implements it.
+                    </div>
+                    <div class="panel-body">
+                      <b>int</b> average, <var style="color: #0000FF">count</var> = <var>0</var>
+                      <br>
+                      <b>int</b> <var>minGrade</var> = <var>{{randomValue}}</var>
+                      <br>
+                      <b>list::int</b> <var>grades</var> = <var>[5,6,7,5,8,9,6,8,7]</var>
+                      <br>
+                      <br>
+                      <b>for</b> (<b>int</b> <var>i</var> = <var>1</var> ; <var>i</var> <= <var>grades.size</var> ; <var>i++</var>) {
+                      <br>
+                      &emsp;<var>average</var> = <var>average</var> + <var>grades</var> [<var> i </var>]
+                      <br>
+                      }
+                      <br>
+                      <var">average</var> = <var>average</var> / <var>grades.size</var>
+                      <br>
+                      <br>
+                      <b>for</b> (<b>int</b> <var>i</var> = <var>1</var> ; <var>i</var> <= <var>grades.size</var> ; <var>i++</var>) {
+                      <br>
+                      &emsp;<b>if</b> <emph  style="color: #FF0000">(...)</emph> {
+                      <br>
+                      &emsp;&emsp; <var style="color: #0000FF">count++</var>
+                      <br>
+                      &emsp;}
+                      <br>
+                      }
+                    </div>
+                    <div class="panel-heading">
+                      <b>Requirements: </b> The code should list how many students have grades 
+                      <i style="color: #FF0000">
+                      {% if boolVariable == 0 %}
+                      below
+                      {% else %}
+                      above
+                      {% endif %}
+                      </i> 
+                       the class average
+                      <i style="color: #FF0000">
+                      {% if boolVariable == 0 %}
+                        but above
+                      {% else %}
+                        and below
+                      {% endif %}
+                      </i>
+                       the minimum required grade.
+                    </div>
+                    <div class="panel-heading">
+                      Please select the option implements the requirements listed above.
+                    </div>
+                    <div class="panel-body">
+                      <table class="table" id="q4">
+                        <tr>
+                          <td>
+                            <div class="radio">
+                              {% if boolVariable == 0 %}
+                                <label><input type="radio" name="optradio" value="correct">if ( <var>average</var> > <var>grades[i]</var>  &&  <br> minGrade</var> < <var>grades[i]</var> ) {</label>
+                              {% else %}
+                                <label><input type="radio" name="optradio" value="correct">if ( <var>average</var> < <var>grades[i]</var>  &&  <br> minGrade</var> > <var>grades[i]</var> ) {</label>
+                              {% endif %}
+                            </div>
+                          </td>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="wrong">if ( <var>minGrade</var> < <var>grades[i]</var> ) {</label>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="wrong">if ( <var>average</var> == <var>grades[i]</var>  &&  <br> minGrade</var> == <var>grades[i]</var> ) {</label>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="wrong">if ( <var>average</var> < <var>grades[i]</var> ) {</label>
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
+                      <button type="button" class="btn"  onclick="questionConfirmed(this,'q4')">Confirm</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+
+		<section>
+          {% set grade01 = range(1, 11) | random  %}
+          {% set grade02 = range(1, 11) | random  %}
+          {% set count = 0  %}
+          {% set invertNames = range(0, 2) | random  %}
+          {% if grade01 > grade02 %}
+
+          {% else %}
+
+          {% endif %}
+
+          {% if grade01 < 5 %}
+          	{% set count = count + 1 %}
+          {% endif %}
+          {% if grade02 < 5 %}
+          	{% set count = count + 1 %}
+          {% endif %}
+
+          <div class="row">
+            <div class="army-skill col-xs-12 skill_one">
+              <div class="vertical-center-skill">
+                <div class="container-fluid">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      Please review the functional code below and, based on the requirements listed, answer the following question.
+                      <br>
+                      <br>
+                      In the program below, student grades are input in the following order: <i>Name1, Name2, Grade1, Grade2</i>. 
+                      The grades are stored in the <b>argv</b> table variable, which has size 4 and index range [1-4].
+                    </div>
+                    <div class="panel-body">
+                   	  <b>int</b> <var style="color: #FF0000">count</var> = <var>2</var>
+                      <br>
+                      <b>if</b> (<var>argv</var>[3] <b><</b> 5) &emsp;<var style="color: #FF0000">count</var>++
+                      <br>
+                      <b>if</b> (<var>argv</var>[4] <b><</b> 5) &emsp;<var style="color: #FF0000">count</var>++
+                      <br>
+                      <br>
+                      <b>if</b> (<var style="color: #FF0000">count</var> == 0) {
+                      <br>
+                      &emsp;<b>if</b> (<var>argv</var>[3] <b>></b> <var>argv</var>[4]) {
+                      <br>
+                      &emsp;&emsp;<b>print</b>("Congratulations: " + argv[1] + ", " + argv[3])
+                      <br>
+                      &emsp;} <b>else</b> {
+                      <br>
+                      &emsp;&emsp;<b>print</b> ("Congratulations: " + argv[2] + ", " + argv[4])
+                      <br>
+                      &emsp;}
+                      <br>
+                      } <b>else</b> {
+                      <br>
+                      &emsp;<b>print</b> ("What a shame: " + <var style="color: #FF0000">count</var>)
+                      <br>
+                      }
+
+                    </div>
+                    <div class="panel-heading">
+                      <b>Input: </b> <i style="color: #0000FF">[
+                      {% if invertNames == 1 %}
+                      	Adam, Steve,
+                      {% else %}
+                      	Steve, Adam,
+                      {% endif %}
+                      {{grade01}}, {{grade02}}
+                      ]</i>
+                    </div>
+                    <div class="panel-heading">
+                     Please select the option that corresponds to the print function output.
+                    </div>
+                    <div class="panel-body">
+                      <table class="table" id="q5">
+                        <tr>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="correct">
+                              {% if count == 0 %}
+                              	{% if grade01 > grade02 %}
+		                              {% if invertNames == 1 %}
+		                              	Congratulations: Adam, {{grade01}}
+		                              {% else %}
+		                              	Congratulations: Steve, {{grade01}}
+		                              {% endif %}
+		                        {% else %}
+		                              {% if invertNames == 1 %}
+		                              	Congratulations: Adam, {{grade02}}
+		                              {% else %}
+		                              	Congratulations: Steve, {{grade02}}
+		                              {% endif %}
+		                        {% endif %}
+	                          {% else %}
+	                          	What a shame: {{count}}
+	                          {% endif %}
+                              </label>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="wrong">What a shame: 0</label>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="wrong">
+                              	{% if count != 0 %}
+	                              {% if invertNames == 1 %}
+	                              	Congratulations: Adam, {{grade01}}
+	                              {% else %}
+	                              	Congratulations: Steve, {{grade01}}
+	                              {% endif %}
+	                            {% else %}
+	                           	  What a shame: 2
+                                {% endif %}
+		                      </label>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="radio">
+                              <label><input type="radio" name="optradio" value="wrong">
+                              	{% if count != 0 %}
+	                              {% if invertNames == 1 %}
+	                              	Congratulations: Steve, {{grade02}}
+	                              {% else %}
+	                              	Congratulations: Adam, {{grade02}}
+	                              {% endif %}
+	                            {% else %}
+	                           	  What a shame: 1
+                                {% endif %}
+                              </label>
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
+                      <button type="button" class="btn"  onclick="questionConfirmed(this,'q5')">Confirm</button>
+                    </div>
+                  </div>
+                </div>
+                <br>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
