@@ -119,36 +119,45 @@ def addHeart(rate,accuracy,ip,hashkey,deviceID):
 
 ########################################
 def addVisit(request):
-	print("Logging visit")
-	myIP = requests.get('http://ipv4.icanhazip.com/').content
+	myIP = str(requests.get('http://ipv4.icanhazip.com/').content).rstrip()
 	ip = request.remote_addr
 
 	if (myIP == ip) or (ip == "127.0.0.1") or (ip == "0.0.0.0"):
 		print("\t \\--> Ignoring Local Visit")
 		return
+	else:		
+		print("\t \\--> Logging Visit from [" + str(ip) + "]. My IP: [" + myIP + "]")
+
 
 	client = getVisitorID(ip)
+	reply = False
 	if (client == None):
 		#print("Logging NEW user: " + str(ip))
-		addClient(ip)
+		reply = addClient(ip)
 	else:
 		#print("Logging OLD user: " + str(ip) + "\tUID: <" + str(client) + ">")
-		updateClient(ip)
+		reply = updateClient(ip)
 
-	#Saving Visit to DB
-	query = models.Visit(ip)
-	db.session.add(query)
-	db.session.commit()
+	if (reply == True):
+		#Saving Visit to DB
+		query = models.Visit(ip)
+		db.session.add(query)
+		db.session.commit()
 
 
 ########################################
 def addClient(ip):
 	#Saving Client to DB
+	myIP = str(requests.get('http://ipv4.icanhazip.com/').content).rstrip()
+	if (myIP == ip) or (ip == "127.0.0.1") or (ip == "0.0.0.0"):
+		return False
+
 	query = models.Client(ip)
 	location = getLocation(ip)
 	query.location = location
 	db.session.add(query)
 	db.session.commit()
+	return True
 
 
 ########################################
