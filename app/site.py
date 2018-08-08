@@ -67,6 +67,44 @@ def updateHeart(rate,accuracy,ip,hashkey,deviceID):
 
 
 ########################################
+def getLocation(ip):
+	response = requests.get('https://tools.keycdn.com/geo.json?host='+str(ip)).content
+	jsonified = json.loads(response)
+	if jsonified["status"] == "success":
+		country = str(jsonified["data"]["geo"]["country_name"])
+		code = str(jsonified["data"]["geo"]["country_code"])
+		if (country != "None"):
+			print()
+			return(country)
+		else:
+			print(response)
+			return(str(jsonified["data"]["geo"]["continent_name"]))
+	print("Error: "+jsonified["status"])
+	return("unknown")
+
+
+########################################
+def updateClientList():
+	query = models.Client.query.all()
+	if query is not None:
+		#ipList = sorted(ipList, key=lambda x: x.accessCount, reverse=True)
+		index = 1
+		for item in query:
+			#Only updating clients with unknown locations to save on the queries to the API
+			if (item.location == "unknown") or item.location == "None":
+				newLocation = getLocation(item.ip)
+				if (newLocation != "unknown") and (newLocation != "None"):
+					#print("[" + str(index) + "] " + newLocation)
+					item.location = newLocation
+				else:
+					print("\t \\--> still unknown")
+			#else:
+			#	print("[" + str(index) + "] is Already Good")
+			index = index + 1
+		db.session.commit()
+
+
+########################################
 def addHeart(rate,accuracy,ip,hashkey,deviceID):
 	if int(rate) != -1 or int(accuracy) != -1 or getHeart( hashkey, deviceID) == None:
 		#print("Wrong Rates")
@@ -82,7 +120,13 @@ def addHeart(rate,accuracy,ip,hashkey,deviceID):
 ########################################
 def addVisit(request):
 	print("Logging visit")
+	myIP = requests.get('http://ipv4.icanhazip.com/').content
 	ip = request.remote_addr
+
+	if (myIP == ip) or (ip == "127.0.0.1") or (ip == "0.0.0.0"):
+		print("\t \\--> Ignoring Local Visit")
+		return
+
 	client = getVisitorID(ip)
 	if (client == None):
 		#print("Logging NEW user: " + str(ip))
@@ -101,6 +145,8 @@ def addVisit(request):
 def addClient(ip):
 	#Saving Client to DB
 	query = models.Client(ip)
+	location = getLocation(ip)
+	query.location = location
 	db.session.add(query)
 	db.session.commit()
 
@@ -110,6 +156,7 @@ def updateClient(ip):
 	curUser = models.Client.query.filter_by(ip=ip).first()
 	curUser.lastAccess = datetime.utcnow()
 	curUser.accessCount = int(curUser.accessCount) + 1
+	curUser.location = getLocation(curUser.ip)
 	db.session.commit()
 
 
@@ -145,20 +192,20 @@ def page_not_found(e):
 
 
 ########################################
-@app.route('/', methods=['GET','POST'])
+@app.route('/', methods=['GET'])
 def home():
 	addVisit(request)
 	return render_template('index.html',error=None)
 
 
 ########################################
-@app.route('/index', methods=['GET','POST'])
+@app.route('/index', methods=['GET'])
 def index():
 	addVisit(request)
 	return render_template('index.html',error=None)
 
 ########################################
-@app.route('/stats', methods=['GET','POST'])
+@app.route('/stats', methods=['GET'])
 def stats():
 	addVisit(request)
 	ipList = getClientList()
@@ -204,6 +251,14 @@ def heart():
 		return("GOOD")
 	else:
 		return("BAD")
+
+########################################
+@app.route('/test', methods=['GET'])
+def test():
+	ip = request.remote_addr
+	#client = getVisitorID(ip)
+	#updateClientList()
+	return (getLocation("46.174.191.28"))
 
 ######################################################
 ########################## Legacy Personal Stuff Below

@@ -12,6 +12,8 @@
 </style>
 
 {% if ipList %}
+
+<!-- Frequency Distribution Graph -->
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
   google.charts.load('current', {'packages':['corechart']});
@@ -38,7 +40,44 @@
   chart.draw(data, options);
 }
 </script>
+
+<!-- World Map Distribution Chart -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+  google.charts.load('current', {
+    'packages':['geochart'],
+    // Note: you will need to get a mapsApiKey for your project.
+    // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
+    'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+    //'mapsApiKey': 'AIzaSyDMuQYwfFHc731rJzmg3gTtoRuJlZunbHU'
+  });
+  google.charts.setOnLoadCallback(drawRegionsMap);
+
+  function drawRegionsMap() {
+    var data = google.visualization.arrayToDataTable([
+      ['Country', 'Popularity'],
+      ['United States', 1],
+      ['Brazil', 200],
+      ['Canada', 500],
+    ]);
+
+    var options = {
+    	backgroundColor: { fill:'#dff0d8' },
+    	colorAxis: {colors: ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"]}
+    };
+
+    var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+
+    chart.draw(data, options);
+  }
+</script>
+
+
+
+
 {% endif %}
+
+
 
 {% endblock %}
 
@@ -60,23 +99,32 @@
 				          <div class="col-md-8 text-center">
 				            <div id="chart_div"></div>
 				            <br>
+				            <!--<div id="regions_div"></div>-->
+				            <br>
+      						Location Statistics Measurement Enabled by <a href="https://tools.keycdn.com/geo">KeyCDN</a>
+      						<br>
+      						<br>
     						<table class="table table-bordered">
 								<thead class="thead-inverse">
-								<tr>
+								<tr data-toggle="collapse" data-target="#accordion" class="clickable">
 								<th class="text-center bg-warning">Index</th>
 								<th class="text-center bg-success">IP</th>
+								<th class="text-center bg-success">Country</th>
 								<th class="text-center bg-success">Access Count</th>
 								</tr>
 								</thead>
+    							<div id="accordion" class="collapse">
 						        <tbody>
 									{% for client in ipList %}
 										<tr>
 											<td class="col-md-1 text-center bg-warning">{{ client.index }}</td>
+											<td class="col-md-1 text-center bg-warning">{{ client.location }}</td>
 											<td class="col-md-1 text-center bg-warning">{{ client.ip }}</td>
 											<td class="col-md-2 text-center bg-success">{{ client.accessCount }}</td>
 										</tr>
 									{% endfor %}
 						        </tbody>
+								</div>
 						    </table>
 				          </div>
 				          <div class="col-md-2">
