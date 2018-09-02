@@ -222,10 +222,22 @@ def stats():
 	ipList = getClientList()
 	ipList = sorted(ipList, key=lambda x: x.accessCount, reverse=True)
 	index = 1
+	regionList = {}
 	for client in ipList:
 		client.index = index
 		index = index + 1
-	return render_template('stats.html',ipList=ipList,error=None)
+
+		if not client.location in regionList:
+			regionList[client.location] = {
+				"AccessCount" : client.accessCount,
+				"RegionCode" : client.location
+			}
+			print("Adding Region: " + str(client.location))
+		else:
+			regionList[client.location]["AccessCount"] = regionList[client.location]["AccessCount"] + client.accessCount
+
+
+	return render_template('stats.html',ipList=ipList,countryList=regionList,error=None)
 
 ########################################
 @app.route('/heart', methods=['GET','POST'])
