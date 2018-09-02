@@ -40,7 +40,8 @@ class Visit(db.Model):
 	time = db.Column('time' , db.DateTime)
 
 	def __init__(self , ip):
-		self.id = Visit.query.count()
+		bigIdVisit = Visit.query.all()[len(Visit.query.all())-1]
+		self.id = 	bigIdVisit.id + 1
 		self.ip = ip
 		self.time = datetime.utcnow()
 

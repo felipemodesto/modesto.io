@@ -125,9 +125,8 @@ def addVisit(request):
 	if (myIP == ip) or (ip == "127.0.0.1") or (ip == "0.0.0.0"):
 		print("\t \\--> Ignoring Local Visit")
 		return
-	else:		
-		print("\t \\--> Logging Visit from [" + str(ip) + "]. My IP: [" + myIP + "]")
 
+	print("\t \\--> Logging Visit from [" + str(ip) + "]. My IP: [" + myIP + "]")
 
 	client = getVisitorID(ip)
 	reply = False
@@ -141,6 +140,7 @@ def addVisit(request):
 	if (reply == True):
 		#Saving Visit to DB
 		query = models.Visit(ip)
+		#print("Saving Visit IP: [" + str(query.ip) + "]  ID: [" + str(query.id) + "]")
 		db.session.add(query)
 		db.session.commit()
 
@@ -167,6 +167,7 @@ def updateClient(ip):
 	curUser.accessCount = int(curUser.accessCount) + 1
 	curUser.location = getLocation(curUser.ip)
 	db.session.commit()
+	return True
 
 
 ########################################
@@ -197,6 +198,7 @@ def catch_all(path):
 ######################################## Error 404 Handling
 @app.errorhandler(404)
 def page_not_found(e):
+	addVisit(request)
 	return render_template('404.html'), 404
 
 
@@ -267,7 +269,7 @@ def test():
 	ip = request.remote_addr
 	#client = getVisitorID(ip)
 	#updateClientList()
-	return (getLocation("46.174.191.28"))
+	return ("Your IP is: " + str(ip))
 
 ######################################################
 ########################## Legacy Personal Stuff Below
