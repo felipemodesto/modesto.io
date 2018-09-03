@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% set active_page = "gallery" %}
+{% block content %}
+
+<div class="container-fluid" style="background-color: #cccc99;">
+  <div class="fixed-top"><a href="/">⌂ Home</a></div>
+  <row><br></row>
+  <h1>Gallery</h1>
+  <hr style="border-color: #000000">
+  <div class="army-skill col-xs-12">
+    <div class="vertical-center-skill">
+      <h3>Academic Material</h3>
+      <hr style="border-color: #000000">
+      <p style="text-align: justify;">Designed, formatted, edited and managed print of the Conference Booklets for the ACM MSWiM Conference for the years of <a href="2015 Booklet - digital.pdf">2015</a>, <a href="2016 Booklet - digital.pdf">2016</a> and <a href="2017 Booklet - digital.pdf">2017</a>. For reference, <a  href="2014 Booklet.pdf">this</a> is what the 2014 booklet looked like.</p>
+      <a href="#" data-toggle="modal" data-target=".mswim_booklet">
+        <img src="mswim_covers.png" width="400" class="img-responsive img-rounded center-block" alt="booklets">
+      </a>
+      <br>
+      <p style="text-align: : justify">Designed a logo to replace the word-art one used since the 90's. The first revision, used in 2016 was a larger departure from the previous concept but due to input from the event organizer (and creator of the original art) was modified to be closer to the <a href="#" data-toggle="modal" data-target=".old_logo">old design</a> in 2017.</p>
+      <a href="#" data-toggle="modal" data-target=".mswim_logo">
+        <img src="mswim_logo.png" width="350" class="img-responsive img-rounded center-block" alt="">
+      </a>
+      <p style="text-align: : justify"> Created the presentation template currently in use by the members of the PARADISE Research Laboratory. Template includes custom font selection and color palette.
+      </p>
+      <a href="#" data-toggle="modal" data-target=".presentation_template">
+        <img src="presentation_template.png" width="250" class="img-responsive img-rounded center-block" alt="">
+      </a>
+      <hr style="border-color: #000000">
+    </div>
+  </div>
+
+  <div class="army-skill col-xs-12">
+    <div class="vertical-center-skill">
+      <h3>Personal Brand</h3>
+      <hr style="border-color: #000000">
+      <p style="text-align: justify;">I've always loved diagrams, vector and abstract art. I also loved the Super Nintendo Entertainment System while I was growing up, so I Designed a deconstructed SNES controller that to be tattooed on myself on Dec. 7th 2018 by <a href="https://www.aliciaalderson.com/about">Alicia Alderson</a>.
+      </p>
+      <a href="#" data-toggle="modal" data-target=".tattoo_snes">
+        <img src="snes_deconstructed_v2_transparent.png" width="350" class="img-responsive img-rounded center-block" alt="">
+      </a>      
+      <p style="text-align: justify;">Designed the conceptual representation of my self-defined "Human Multi-tool" skill-set</a>. While it's only currently available as a composite image, the item was designed to be used as an animated graphic that would highlight a specific tool based on current website navigation. This feature will be implemented in the future.
+      </p>
+      <a href="#" data-toggle="modal" data-target=".switch">
+        <img src="switch.png" width="350" class="img-responsive img-rounded center-block" alt="">
+      </a>
+      <hr style="border-color: #000000">
+    </div>
+  </div>
+
+  <div class="army-skill col-xs-12">
+    <div class="vertical-center-skill">
+      <h3>Game Art</h3>
+      <hr style="border-color: #000000">
+      <p style="text-align: justify;">Designed, diagrammed and integrated art into the the Move-it! Charades game. Design made with assistance from <a href="https://www.linkedin.com/in/jo%C3%A3o-felipe-rodrigues-veloso-59957046/">João Felipe Rodrigues Veloso</a>, who provided base elements and some assets. The game is available on Google Play and the Apple Store.
+      </p>
+      <a href="#" data-toggle="modal" data-target=".moveit_logo">
+        <img src="logo_moveit.png" width="250" class="img-responsive img-rounded center-block" alt="">
+      </a>
+      <hr style="border-color: #000000">
+    </div>
+  </div>
+
+  <div class="modal fade moveit_logo" tabindex="-1" role="dialog" aria-labelledby="mswimCoverLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title" id="mswimCoverLabel">English Logo for Move-it! Charades</h4>
+        </div>
+        <div class="modal-body">
+        <img src="logo_moveit.png" class="img-responsive img-rounded center-block" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade mswim_booklet" tabindex="-1" role="dialog" aria-labelledby="mswimCoverLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title" id="mswimCoverLabel">MSWiM Conference Booklet Covers</h4>
+        </div>
+        <div class="modal-body">
+        <img src="mswim_covers.png" class="img-responsive img-rounded center-block" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade mswim_logo" tabindex="-1" role="dialog" aria-labelledby="mswimLogoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title" id="mswimLogoLabel">MSWiM Conference Booklet Covers</h4>
+        </div>
+        <div class="modal-body">
+        <img src="mswim_logo.png" class="img-responsive img-rounded center-block" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade presentation_template" tabindex="-1" role="dialog" aria-labelledby="mswimLogoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title" id="mswimLogoLabel">Presentation Template (PPT & LaTex)</h4>
+        </div>
+        <div class="modal-body">
+        <img src="presentation_template.png" class="img-responsive img-rounded center-block" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade old_logo" tabindex="-1" role="dialog" aria-labelledby="mswimOldLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title" id="mswimOldLabel">Old MSWiM Logo</h4>
+        </div>
+        <div class="modal-body">
+        <img src="mswim_old_logo.jpg" class="img-responsive img-rounded center-block" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade tattoo_snes" tabindex="-1" role="dialog" aria-labelledby="tatooSnesLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title" id="tatooSnesLabel">SNES Deconstructed Controller</h4>
+        </div>
+        <div class="modal-body">
+        <img src="snes_deconstructed_v2_transparent.png" class="img-responsive img-rounded center-block" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

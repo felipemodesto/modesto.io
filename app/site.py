@@ -283,6 +283,12 @@ def test():
 	#updateClientList()
 	return ("Your IP is: " + str(ip))
 
+########################################
+@app.route('/gallery', methods=['GET'])
+def gallery():
+	addVisit(request)
+	return render_template('gallery.html',error=None)
+
 ######################################################
 ########################## Legacy Personal Stuff Below
 ######################################################

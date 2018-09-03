@@ -34,7 +34,7 @@
         vAxis: {title: 'Access Count'},
         legend: 'none',
         trendlines: { 0: {} },
-        backgroundColor: { fill:'#dff0d8' }
+        backgroundColor: { fill:'#f0f0f0' }
       };
 
     var chart = new google.visualization.ScatterChart(document.getElementById('chart_div'));
@@ -63,7 +63,7 @@
     {% endif %}
 
     var options = {
-        backgroundColor: { fill:'#dff0d8' },
+        backgroundColor: { fill:'#f0f0f0' },
         colorAxis: {colors: ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"]}
     };
 
@@ -81,22 +81,29 @@
   window.onresize = resize;
 </script>
 
+<style>
+  body {
+    background-color: #babaca;
+  }
+</style>
+
 {% endif %}
 
 {% endblock %}
 
 {% block content %}
-  <div class="container-fluid">
+  <div class="container-fluid" style="background-color: #babaca;">
+  <div class="fixed-top"><a href="/">⌂ Home</a></div>
     <row><br></row>
     <row>
+    <row>
+    <h1>Visitor IP List</h1>
+    <hr style="border-color: #000000">
+    <br>
+    </row>
         <div class="col-md-12">
             <div class="army-skill">
                     {% if ipList %}
-                        <row>
-                        <h1>Visitor IP List</h1>
-                        <hr style="border-color: #000000">
-                        <br>
-                        </row>
                         <row>
                           <div class="col-md-2">
                           </div>
@@ -111,20 +118,20 @@
                             <table class="table table-bordered">
                                 <thead class="thead-inverse">
                                 <tr data-toggle="collapse" data-target="#accordion" class="clickable">
-                                <th class="text-center bg-warning">Index</th>
-                                <th class="text-center bg-success">Country</th>
-                                <th class="text-center bg-success">IP</th>
-                                <th class="text-center bg-success">Access Count</th>
+                                <th class="text-center " style="background-color: #f0f0f0;">Index</th>
+                                <th class="text-center " style="background-color: #f0f0f0;">Country</th>
+                                <th class="text-center " style="background-color: #f0f0f0;">IP</th>
+                                <th class="text-center " style="background-color: #f0f0f0;">Access Count</th>
                                 </tr>
                                 </thead>
                                 <div id="accordion" class="collapse">
                                 <tbody>
                                     {% for client in ipList %}
                                         <tr>
-                                            <td class="col-md-1 text-center bg-warning">{{ client.index }}</td>
-                                            <td class="col-md-1 text-center bg-warning">{{ client.location }}</td>
-                                            <td class="col-md-1 text-center bg-warning">{{ client.ip }}</td>
-                                            <td class="col-md-2 text-center bg-success">{{ client.accessCount }}</td>
+                                            <td class="col-md-1 text-center " style="background-color: #f0f0f0;">{{ client.index }}</td>
+                                            <td class="col-md-1 text-center " style="background-color: #f0f0f0;">{{ client.location }}</td>
+                                            <td class="col-md-1 text-center " style="background-color: #f0f0f0;">{{ client.ip }}</td>
+                                            <td class="col-md-2 text-center " style="background-color: #f0f0f0;">{{ client.accessCount }}</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
