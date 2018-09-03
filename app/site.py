@@ -232,7 +232,7 @@ def stats():
 				"AccessCount" : client.accessCount,
 				"RegionCode" : client.location
 			}
-			print("Adding Region: " + str(client.location))
+			#print("Adding Region: " + str(client.location))
 		else:
 			regionList[client.location]["AccessCount"] = regionList[client.location]["AccessCount"] + client.accessCount
 
