@@ -281,6 +281,12 @@ def test():
 	#updateClientList()
 	return (getLocation("46.174.191.28"))
 
+########################################
+@app.route('/gallery', methods=['GET'])
+def gallery():
+	addVisit(request)
+	return render_template('gallery.html',error=None)
+
 ######################################################
 ########################## Legacy Personal Stuff Below
 ######################################################

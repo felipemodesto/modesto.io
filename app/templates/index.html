@@ -1,12 +1,30 @@
 {% extends "base.html" %}
 {% set active_page = "index" %}
+{% block header %}
+
+<style>
+  body {
+    background-color: #babaca;
+  }
+</style>
+
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid">
   <div class="row">
     <div class="hidden-xs hidden-sm col-md-4 leftcol " style="min-height: 500px;">
       <div class="title-text"><b>Felipe Modesto</b>,<br><i>Human Multi-tool</i></div>
       <img src="/switch.png" class="vertical-center" alt="Switch Swiss-army Core" style="width:300px">
-      <div class="title-text-bottom">Note: this website is a work in progress, I tinker with it on my spare time, so there might be a bug or two lurking around.</div>
+      <div class="title-text-bottom">This website is a work in progress, I tinker with it on my spare time, so there might be a bug or two lurking around.</div>
+      <br>
+      <div class="text-center title-text-top" style="text-align: center;">
+        <a class="text-link" href="/gallery">Gallery</a>
+         - 
+        <a class="text-link" href="https://www.linkedin.com/in/femodesto/">Linkedin</a>
+         - 
+        <a class="text-link" href="/stats">Site Statistics</a>
+      </div>
     </div>
     <div class="col-md-8 col-xs-12">
       <div id="rightcol">
@@ -16,7 +34,14 @@
               <div class="vertical-center-skill">
                 <div class="title-text"><b>Felipe Modesto</b>,<br><i>Human Multi-tool</i></div>
                 <img src="/switch.png" class="vertical-center" alt="Switch Swiss-army Core" style="width:300px">
-                <div class="title-text-bottom"><br>T-I-G-H-T</div>
+                <div class="title-text-bottom-tight"><br>This site is scroll-lock friendly;<br>It's also a work in progress, please mind the mess.</div>
+                <div class="text-center text-bottom">
+                  <a class="text-link" href="/gallery">Gallery</a>
+                   - 
+                  <a class="text-link" href="https://www.linkedin.com/in/femodesto/">Linkedin</a>
+                   - 
+                  <a class="text-link" href="/stats">Site Statistics</a>
+                </div>
               </div>
             </div>
           </div>
@@ -33,7 +58,7 @@
                 Below you will find a brief description of my skills and interests.</p>
                 <p>
                 If I had to pick one regret it would be not to have photographed the stuff I made more.
-                But that's ok, i'll take it as a learning exercise.
+                But that's OK, I'll take it as a learning exercise.
                 In the future I might leave project files & other interesting things I do here.</p>
                 <br>
                 <br>
@@ -56,7 +81,7 @@
                 <h1>Programmer</h1>
                 <hr style="border-color: #000000">
                 <br>
-                <p style="text-align: : center">C++, C#, Java, Lua, Python, Matlab... Hell, I probably still remember Pascal. I've been writing code for over 10 years now for a varied number of applications, from business solutions, art projects, video games, educational software, research and even a couple of personal home automation projects. I'm not saying that I'm an incredible programmer, but i'm pretty good, flexible, quick-learner. (Also kinda cocky, sorry). I wrote this very site on my own using a mix of python, bootstrap, html/css and a few components (see source code for references).</p>
+                <p style="text-align: : center">C++, C#, Lua, Python, Java, Matlab... Hell, I probably still remember Pascal. I've been writing code for over 10 years now for a varied number of applications, from business solutions, art projects, video games, educational software, research and even a couple of personal home automation projects. I'm not saying that I'm an incredible programmer, but I'm pretty good, flexible, quick-learner. (Also kinda cocky, sorry). I wrote this very site on my own using a mix of python, bootstrap, html/css and a few components (see source code for references).</p>
                 <p style="text-align: : center"> If you're curious who's been lurking around these pages, you can check some stats <a href="stats">here</a>.</p>
               </div>
             </div>
@@ -72,7 +97,7 @@
                 <p style="color: #ffffff">
                 My artistic vein started sprouting in grade 6, when I joined a club in school.
                 I first started using <i>Adobe Photoshop</i> back in version 7.0 around 2002, introduced by a friend's older brother. While I'm not great at hand-drawn illustrations, I'm damn good at using the Adobe tool-set and am glad to say I pay for their subscription. Even before they bought Macromedia, (for which I actually did some training, God bless Macromedia Studio MX), I had already become a fan of Adobe.
-                From Photoshop, Illustrator, Indesign to <s>Soundbooth</s> Audition, Premiere and After Effects, I've at least fiddled with all the tools they make available. I do own a Wacom bamboo but, again, am not great with a pen. I do know the tools and what to demand of my artists.
+                From Photoshop, Illustrator, InDesign to <s>Soundbooth</s> Audition, Premiere and After Effects, I've at least fiddled with all the tools they make available. I do own a Wacom bamboo but, again, am not great with a pen. I do know the tools and what to demand of my artists.
                 </p>
                 <p style="color: #ffffff">
                 Part of my creativity comes from a natural predilection.
@@ -94,7 +119,7 @@
                 Since 2011 I have been actively working as an entrepreneur.
                 Fira Soft was my first business venture and despite ups and downs it's been growing for the past 5 years.
                 Our staff totals 12 people and I'm the creative director for the company.
-                My responsabilities at Fira Soft include deciding on the creative process of our projects, coordinating the design team, validating work and project scope.
+                My responsibilities at Fira Soft include deciding on the creative process of our projects, coordinating the design team, validating work and project scope.
                 The clients we've worked with range from Government Entities (CNMP, FIESC) to banks (Banco do Brasil) as well as private companies (Brasil Kirin, Maurício de Sousa).
                 In early 2018 we won a <a href="https://www.ancine.gov.br/pt-br/sala-imprensa/noticias/ancine-anuncia-vencedores-do-edital-de-jogos-eletr-nicos">grant</a> from the Brazilian national arts agency to complete our game: Kriophobia.
                 
@@ -135,10 +160,10 @@
                 <p>One of the projects I worked on was a virtual painting application where the user would do digital "finger painting".
                 The project was part of a University program I participated while working with professor Venturelli.
                 We built it before VR was the hot new thing (2008), it was very unique at the time.
-                The system implemented using an Infra-red bracelet and a gyscope attached to an absuction sensor glove tracked by a 3D camera system made up of 3x Microsoft Lifecam VX-3000s with the IR filter replaced by photo negatives and placed at the edges of the XYZ axis.
+                The system implemented using an Infra-red bracelet and a gyroscope attached to an abduction sensor glove tracked by a 3D camera system made up of 3x Microsoft Lifecam VX-3000s with the IR filter replaced by photo negatives and placed at the edges of the XYZ axis.
                 </p>
                 <p>I've also done a lot of 3D printing, free-hand sculpting.
-                I built a 4-player USB adapter for SNES controlers built into a SNES (2 ports were positioned in the game cartridge slot).
+                I built a 4-player USB adapter for SNES controllers built into a SNES (2 ports were positioned in the game cartridge slot).
                 If you ever saw the adapter at UnB's Computer Science CA room, that was my work.
                 I've currently got a few designs available on <a href="https://www.thingiverse.com/felipe_modesto">Thingiverse</a>.
                 </p>
@@ -157,9 +182,9 @@
                 "The drums... The drums [x11]" - <i>The Ting Tings, 2008</i>
                 </p>
                 <p style="color: #ffffff">
-                I "play" drums at an intermediate level, good enough to do pro-drums on expert on rock band, not enough to play in a band. Maybe in a shitty highs-chool rock band.
+                I "play" drums at an intermediate level, good enough to do pro-drums on expert on rock band, not enough to play in a band. Maybe in one of those bad high-school rock band.
                 I'm not musically gifted so I didn't pursue the career but I have full understanding of musical composition, rhythm and have helped guide the tone for some of the work the incredible in-house composer we have at Fira Soft has worked on.
-                <a href="https://soundcloud.com/hellmz">Herman Ferreira</a>, who is also my business partner, has taught me a lot and was one of the reasons I took a course on computer audio composition during my undergraduate studies.
+                <a href="https://soundcloud.com/hellmz" style="color: #ffffff !important;">Herman Ferreira</a>, who is also my business partner, has taught me a lot and was one of the reasons I took a course on computer audio composition during my undergraduate studies.
                 </p>
               </div>
             </div>
@@ -180,9 +205,9 @@
                 <p>
                 I'm not the master of many subjects but I know a lot about a lot of things.
                 While it has been proven that photographic (eidetic) memory isn't really a thing I do feel I have great memory recall, coupled with quick thinking.
-                I am not a "know-it-all", but i'm a pretty good generalist with many specialist skills and lots of trivia knowledge.
+                I am not a "know-it-all", but I'm a pretty good generalist with many specialist skills and lots of trivia knowledge.
                 For example, did you know that out of the last 6 US presidents, 4 of them were left-handed?
-                <i>Reagan was ambidextreous but that was because of irrational backwards-thinking parenting forcing him to main his right-hand.</i>
+                <i>Reagan was ambidextrous but that was because of irrational backwards-thinking parenting forcing him to main his right-hand.</i>
                 </p>
                 <br>
                 <img src="/nerd.png" class="center-block" alt="Homer Simpson Nerd" style="width:200px">
