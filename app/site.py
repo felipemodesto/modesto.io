@@ -74,10 +74,10 @@ def getLocation(ip):
 		country = str(jsonified["data"]["geo"]["country_name"])
 		code = str(jsonified["data"]["geo"]["country_code"])
 		if (country != "None"):
-			print()
+			#print()
 			return(country)
-		else:
-			print(response)
+		#else:
+		#	print(response)
 			return(str(jsonified["data"]["geo"]["continent_name"]))
 	print("Error: "+jsonified["status"])
 	return("unknown")
