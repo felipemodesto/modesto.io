@@ -7,3 +7,4 @@ tmp/log.log
 app/static/.well-known
 tmp
 db_repository
+ssl/
