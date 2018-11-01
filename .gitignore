@@ -5,3 +5,5 @@ app/pubg.pyc
 app/site.pyc
 tmp/log.log
 app/static/.well-known
+tmp
+db_repository
