@@ -4,3 +4,4 @@ app/models.pyc
 app/pubg.pyc
 app/site.pyc
 tmp/log.log
+app/static/.well-known
