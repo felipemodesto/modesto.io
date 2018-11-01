@@ -6,3 +6,4 @@ app/site.pyc
 tmp/log.log
 ssl/
 run.pyc
+app.db
