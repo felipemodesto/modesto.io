@@ -22,10 +22,5 @@ if not app.debug and os.environ.get('HEROKU') is None:
 	file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
 	app.logger.addHandler(file_handler)
 	app.logger.setLevel(logging.INFO)
-	app.logger.info('challonger startup')
 
-
-
-
-
-print "__init__ DONE!"
+print ">> __init__ File Loaded."
