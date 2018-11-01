@@ -4,7 +4,8 @@ from config import WHOOSH_ENABLED
 
 enable_search = WHOOSH_ENABLED
 if enable_search:
-	import flask_whooshalchemy as whooshalchemy
+	import flask_sqlalchemy as sqlalchemy
+	#import flask_whooshalchemy as whooshalchemy
 
 ######################################################
 ################################### LOGIN DATABASE
@@ -72,4 +73,4 @@ class Heartrate(db.Model):
 		return '<Heartrate %r>' %(self.ip)
 
 
-print "Done creating Database Models"
+print ">> Models File Loaded."

@@ -15,9 +15,12 @@ import requests
 ######################################################
 
 ######################################## Pre-page setup
-#@app.before_request
-#def before_request():
-#	g.user = current_user
+@app.before_request
+def before_request():
+    if request.url.startswith('http://'):
+        url = request.url.replace('http://', 'https://', 1)
+        code = 301
+        return redirect(url, code=code)
 
 ######################################################
 ################################### WEBPAGE STUFF
@@ -351,3 +354,5 @@ def pubg():
 
 #if __name__ == '__main__':
 #	app.run(debug=True, port=8000)
+
+print ">> Site File Loaded."

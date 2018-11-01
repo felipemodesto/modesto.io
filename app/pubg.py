@@ -110,5 +110,5 @@ def fetchMatch(mID = MatchID, pKey = PrivateKey):
 def fetchTelemetry(mID = MatchID, pKey = PrivateKey):
 	print("BLABLA")
 
-#fetchUserList(FriendList,PrivateKey)
-#fetchMatch()
+
+print ">> PUBG File Loaded."
