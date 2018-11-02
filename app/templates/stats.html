@@ -10,7 +10,11 @@
     text-align: center;
   }
 </style>
-
+<style>
+  body {
+    background-color: #babaca;
+  }
+</style>
 {% if ipList %}
 
 <!-- Frequency Distribution Graph -->
@@ -80,27 +84,20 @@
   window.onresize = resize;
 </script>
 
-<style>
-  body {
-    background-color: #babaca;
-  }
-</style>
-
 {% endif %}
 
 {% endblock %}
 
 {% block content %}
-  <div class="container-fluid" style="background-color: #babaca;">
+<div class="container-fluid" style="background-color: #babaca;">
   <div class="fixed-top"><a href="/">⌂ Home</a></div>
     <row><br></row>
-    <row>
-    <row>
-    <h1>Visitor Location List</h1>
-    <hr style="border-color: #000000">
-    <br>
-    </row>
-        <div class="col-md-12">
+        <row>
+        <h1>Visitor Location List</h1>
+        <hr style="border-color: #000000">
+        <br>
+      </row>
+      <div class="col-md-12">
             <div class="army-skill">
                     {% if ipList %}
                         <row>
@@ -124,7 +121,7 @@
                                 </tr>
                                 </thead>
                                 <div id="accordion" class="collapse">
-                                <tbody>
+                                  <tbody>
                                     {% for client in ipList %}
                                         <tr>
                                             <td class="col-md-1 text-center " style="background-color: #f0f0f0;">{{ client.index }}</td>
@@ -133,7 +130,7 @@
                                             <td class="col-md-2 text-center " style="background-color: #f0f0f0;">{{ client.accessCount }}</td>
                                         </tr>
                                     {% endfor %}
-                                </tbody>
+                                  </tbody>
                                 </div>
                             </table>
                           </div>

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% set active_page = "heart" %}
+{% block header %}
+
+<style>
+	h1 {
+		text-align: center;
+		font-size: 80px;
+		font-family: Sans-serif;
+	}
+</style>
+ 
+<style>
+	#title_section {
+		margin : 20px 20px;
+	}
+
+	.table td {
+		text-align: center;
+	}
+
+	body {
+		background-color: #dabdab;
+	}
+</style>
+
+
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid" style="background-color: #dabdab;">
+  <div class="fixed-top"><a href="/">⌂ Home</a></div>
+  	<row><br></row>
+    <row>
+	    <h1>Heart-Rate User Lists</h1>
+	    <hr style="border-color: #000000">
+	    <br>
+    </row>
+	    <div class="col-md-12">
+	        <div class="army-skill">
+	        	<row>
+	        		<div class="col-md-2">
+                    </div>
+                    <div class="col-md-8 text-center">
+                    	<p>
+	                    	<br>
+	                    	This is the home page for the <a href="https://play.google.com/store/apps/details?id=io.modesto.streambeats&hl=en_CA">HeartBeats</a> Wear OS App.
+	                    	In this page you will see a list of currently active devices.
+							<br>
+							Please check your subdirectory code in the app to access the corresponding page to your <i>HeartBeat</i>.
+							Alternatively, you can click on the desired Code to be redirected to the appropriate page.
+							<br>
+							<br>
+							<br>
+						</p>
+						<hr>
+						<br>
+						{% if heartList|length > 0 %}
+						<table class="table table-bordered">
+						    <thead class="thead-inverse">
+							    <tr data-toggle="collapse" data-target="#accordion" class="clickable">
+							    <th class="text-center " style="background-color: #f0f0f0;">Device ID</th>
+							    <th class="text-center " style="background-color: #ffffff;">Last Known Heartrate</th>
+							    <th class="text-center " style="background-color: #f0f0f0;">Last Known Accuracy</th>
+							    <th class="text-center " style="background-color: #ffffff;">Last Update (UTC)</th>
+							    </tr>
+						    </thead>
+					    	<div id="accordion" class="collapse">
+						    	<tbody>
+						        {% for heart in heartList %}
+					            <tr>
+					            	{% if heart.heartrate > -1 %}
+					                <td class="col-md-1 text-center " style="background-color: #f0f0f0;"><a href="/heart/{{heart.deviceID}}">{{ heart.deviceID }}</a></td>
+					                <td class="col-md-1 text-center " style="background-color: #ffffff;">{{ heart.heartrate }}</td>
+					                <td class="col-md-1 text-center " style="background-color: #f0f0f0;">{{ heart.accuracy }}</td>
+					                <td class="col-md-1 text-center " style="background-color: #ffffff;">{{ heart.time }}</td>
+					                {% endif %}
+					            </tr>
+						        {% endfor %}
+						    	</tbody>
+					    	</div>
+						</table>
+						{% else %}
+							No devices currently connected and publishing information to our server. :(
+						{% endif %}
+					</div>
+	        		<div class="col-md-2">
+                    </div>
+				</row>
+			</div>
+		</div>
+	</row>
+    <row><br></row>
+</div>
+
+{% endblock %}

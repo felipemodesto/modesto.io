@@ -23,6 +23,10 @@
 
 {% block content %}
 {% if heartRate %}
-	<h1 id="rate"><img src="/heart_icon.png" class="center-block" alt="Heartbeat Monitor" style="width:80px">  {{heartRate}} bpm</h1>
+	{% if heartRate > 0 %}
+		<h1 id="rate"><img src="/heart_icon.png" class="center-block" alt="" style="width:80px">  {{heartRate}} bpm</h1>
+	{% else %}
+		<h1 id="rate">Connection Lost</h1>
+	{% endif %}
 {% endif %}
 {% endblock %}

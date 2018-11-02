@@ -7,3 +7,7 @@ tmp/log.log
 app/static/.well-known
 tmp
 db_repository
+ssl/cert.pem
+ssl/chain.pem
+ssl/fullchain.pem
+ssl/privkey.pem
