@@ -15,17 +15,44 @@ import requests
 ######################################################
 
 ######################################## Pre-page setup
-@app.before_request
-def before_request():
-    if request.url.startswith('http://'):
-        url = request.url.replace('http://', 'https://', 1)
-        code = 301
-        return redirect(url, code=code)
+#@app.before_request
+#def before_request():
+#    if request.url.startswith('http://'):
+#        url = request.url.replace('http://', 'https://', 1)
+#        code = 301
+#        return redirect(url, code=code)
 
 ######################################################
 ################################### WEBPAGE STUFF
 ######################################################
 
+heartrateRemovalTime = 60 * 60
+
+########################################
+def addHeart(rate,accuracy,ip,hashkey,deviceID):
+	if int(rate) == -1 or int(accuracy) == -1:
+		#print("Bad Data",rate,accuracy)
+		return False
+
+	heartInfo = getHeart( hashkey, deviceID)
+	if heartInfo != None:
+		timeDif = heartInfo.time - datetime.utcnow()
+		print("Time Difference:",timeDif)
+		if heartInfo.time - datetime.utcnow() > heartrateRemovalTime:
+			#print("Really Old Data, Deleting User and adding it back")
+			db.session.delete(heartInfo)
+			db.session.commit()
+		else:
+			#print("Bad Hash Information")
+			return False
+
+	#print("Added Heart Rate for: " + str(deviceID))
+	query = models.Heartrate(ip, int(rate), int(accuracy), deviceID, hashkey)
+	db.session.add(query)
+	db.session.commit()
+	return True
+
+########################################
 def getHeart(hashkey,deviceID):
 	query = models.Heartrate.query.filter(models.Heartrate.deviceID==deviceID)
 	if query is not None:
@@ -38,8 +65,10 @@ def getHeart(hashkey,deviceID):
 			#	print("Wrong Hash")
 			#	return -1
 			#else:
-				if (datetime.utcnow() - testUser.time).total_seconds() > 30:
+				if (datetime.utcnow() - testUser.time).total_seconds() > heartrateRemovalTime:
 					#print("Old")
+					db.session.delete(testUser)
+					db.session.commit()
 					return None
 				else:
 					#print("Good")
@@ -63,11 +92,16 @@ def updateHeart(rate,accuracy,ip,hashkey,deviceID):
 			#print("Updated Heart Rate to: " + str(rate))
 			return True
 		#print("User not found")
-		return False
-	#else:
-	#	addHeart(rate, accuracy, ip, hashkey, deviceID)
+		addHeart(rate, accuracy, ip, hashkey, deviceID)
+		#return False
+	else:
+		addHeart(rate, accuracy, ip, hashkey, deviceID)
 	return True
 
+
+########################################
+def getHeartList():
+	return models.Heartrate.query.all()
 
 ########################################
 def getLocation(ip):
@@ -82,7 +116,7 @@ def getLocation(ip):
 		#else:
 		#	print(response)
 			return(str(jsonified["data"]["geo"]["continent_name"]))
-	print("Error: "+jsonified["status"])
+	#print("Error: "+jsonified["status"])
 	return("unknown")
 
 
@@ -105,19 +139,6 @@ def updateClientList():
 			#	print("[" + str(index) + "] is Already Good")
 			index = index + 1
 		db.session.commit()
-
-
-########################################
-def addHeart(rate,accuracy,ip,hashkey,deviceID):
-	if int(rate) != -1 or int(accuracy) != -1 or getHeart( hashkey, deviceID) == None:
-		#print("Wrong Rates")
-		return updateHeart(rate, accuracy, ip, hashkey, deviceID)
-	else:
-		#print("Added Heart Rate for: " + str(deviceID))
-		query = models.Heartrate(ip, int(rate), int(accuracy), deviceID, hashkey)
-		db.session.add(query)
-		db.session.commit()
-		return True
 
 
 ########################################
@@ -245,22 +266,45 @@ def stats():
 ########################################
 @app.route('/heart', methods=['GET','POST'])
 def heart():
-	#addVisit(request)
+	return heart_code("")
+
+########################################
+@app.route('/heart/<code>', methods=['GET','POST'])
+def heart_code(code):
+	accuracyMap = {
+	 1 : "Low",
+	 2 : "Medium",
+	 3 : "High"
+	}
 	if request.method == 'GET':
+
+		if code == "":
+			heartRateInfoList = getHeartList()
+			for i in range(0,(len(heartRateInfoList))):
+				heartRateInfoList[i].accuracy = accuracyMap[heartRateInfoList[i].accuracy]
+			return render_template('heart_list.html',heartList =heartRateInfoList )
+
 		#heartRate = getHeart("[B@11b4a9b","27b19c8daf29df23")
-		rateInfo = getHeart("does_not_matter","27b19c8daf29df23")
+		rateInfo = getHeart("does_not_matter",code)
 		heartRate = None
 		accuracy = None
 		if rateInfo != None:
+			#print(" \\--> Have Heart Rate")
 			if rateInfo.heartrate != 0 and rateInfo.heartrate != -1:
-				heartRate = rateInfo.heartrate
-				accuracy = rateInfo.accuracy
-		#return (str(heartRate) + " bpm")
-		return render_template('heart.html',heartRate=heartRate,accuracy=accuracy,error=None)
+				if (datetime.utcnow() - rateInfo.time).total_seconds() < 30:
+					heartRate = rateInfo.heartrate
+				else:
+					heartRate = -1
+				accuracy = accuracyMap[rateInfo.accuracy]
+
+			return render_template('heart.html',heartRate=heartRate,accuracy=accuracy,error=None)
+		else:
+			print(" \\--> No Info")
+			return ("BPM Information not available.<br>Information might have been deleted as it became old.")
 
 	postString = request.get_data()
 	#print(postString)
-	
+
 	heartrateDict = json.loads(postString)
 	currentHeartrate = int(heartrateDict['heartrate'])
 
@@ -271,7 +315,6 @@ def heart():
 	else:
 		#print("Attempt Update")
 		returnStatus = updateHeart(heartrateDict['heartrate'],heartrateDict['accuracy'],heartrateDict['ip'],heartrateDict['key'],heartrateDict['uid'])
-
 
 	if returnStatus == True:
 		return("GOOD")
