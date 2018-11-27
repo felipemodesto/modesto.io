@@ -26,7 +26,7 @@ import requests
 ################################### WEBPAGE STUFF
 ######################################################
 
-heartrateRemovalTime = 60 * 60
+heartrateRemovalTime = 60 * 30	#X Minutes until removal (X * 60)
 
 ########################################
 def addHeart(rate,accuracy,ip,hashkey,deviceID):
@@ -51,6 +51,7 @@ def addHeart(rate,accuracy,ip,hashkey,deviceID):
 	db.session.add(query)
 	db.session.commit()
 	return True
+
 
 ########################################
 def getHeart(hashkey,deviceID):
@@ -101,7 +102,19 @@ def updateHeart(rate,accuracy,ip,hashkey,deviceID):
 
 ########################################
 def getHeartList():
-	return models.Heartrate.query.all()
+	heartList = models.Heartrate.query.all()
+	foundDeletable = False
+	for i in range(0,(len(heartList))):
+		timeDif = (datetime.utcnow() - heartList[i].time).total_seconds()
+		print(timeDif)
+		if timeDif > heartrateRemovalTime:
+			print("This user needs deletion!")
+			db.session.delete(heartList[i])
+			foundDeletable = True
+	if foundDeletable:
+		db.session.commit()
+		heartList = models.Heartrate.query.all()	
+	return heartList
 
 ########################################
 def getLocation(ip):
@@ -334,6 +347,17 @@ def test():
 def gallery():
 	addVisit(request)
 	return render_template('gallery.html',error=None)
+
+########################################
+@app.route('/minesweeper', methods=['GET'])
+def minesweeper():
+	if request.method == 'GET':
+		addVisit(request)
+		return render_template('minesweeper.html',error=None)
+
+	if request.method == 'POST':
+		#TODO: Replace with implementation made for the programming challenge
+		pass
 
 ######################################################
 ########################## Legacy Personal Stuff Below
