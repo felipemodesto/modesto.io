@@ -1,5 +1,7 @@
 #!flask/bin/python
-from flask import Flask, flash, session, render_template, redirect, url_for, request, jsonify, abort ,g
+from flask import Flask, Response, flash, session,make_response, render_template, redirect, url_for, request, jsonify, abort ,g
+from flask import current_app as app
+from flask_restful import Resource, Api
 from werkzeug.exceptions import HTTPException
 from datetime import *
 from app import *
@@ -8,6 +10,8 @@ from json2html import *
 import json
 import sys
 import requests
+
+
 
 
 ######################################################
@@ -27,6 +31,36 @@ import requests
 ######################################################
 
 heartrateRemovalTime = 60 * 60
+
+
+
+########################################
+class VisitorData(Resource):
+    def get(self, visitorIP):
+		query = models.Client.query.filter(models.Client.ip==visitorIP)
+		if query is not None:
+			visitList = models.Visit.query.filter(models.Visit.ip==str(query.first().ip)).all()
+			returnableList = []
+			for visit in visitList:
+				returnableList.append({
+					'id':visit.id,
+					'ip':visit.ip,
+					'time':visit.time.strftime("%Y-%m-%d %H:%M:%S")
+				})
+			return jsonify(result=returnableList)
+
+			#list = [
+            #{'a': 1, 'b': 2},
+            #{'a': 5, 'b': 10}
+           	#]
+           	#return list
+
+		return None
+
+#Adding our API endpoint
+appAPI = Api(app)
+appAPI.add_resource(VisitorData, '/data/<string:visitorIP>')
+
 
 ########################################
 def addHeart(rate,accuracy,ip,hashkey,deviceID):
@@ -74,7 +108,6 @@ def getHeart(hashkey,deviceID):
 					#print("Good")
 					return testUser
 
-
 ########################################
 def updateHeart(rate,accuracy,ip,hashkey,deviceID):
 	query = models.Heartrate.query.filter(models.Heartrate.deviceID==deviceID)
@@ -98,7 +131,6 @@ def updateHeart(rate,accuracy,ip,hashkey,deviceID):
 		addHeart(rate, accuracy, ip, hashkey, deviceID)
 	return True
 
-
 ########################################
 def getHeartList():
 	return models.Heartrate.query.all()
@@ -119,7 +151,6 @@ def getLocation(ip):
 	#print("Error: "+jsonified["status"])
 	return("unknown")
 
-
 ########################################
 def updateClientList():
 	query = models.Client.query.all()
@@ -139,7 +170,6 @@ def updateClientList():
 			#	print("[" + str(index) + "] is Already Good")
 			index = index + 1
 		db.session.commit()
-
 
 ########################################
 def addVisit(request):
@@ -168,7 +198,6 @@ def addVisit(request):
 		db.session.add(query)
 		db.session.commit()
 
-
 ########################################
 def addClient(ip):
 	#Saving Client to DB
@@ -183,7 +212,6 @@ def addClient(ip):
 	db.session.commit()
 	return True
 
-
 ########################################
 def updateClient(ip):
 	curUser = models.Client.query.filter_by(ip=ip).first()
@@ -193,7 +221,6 @@ def updateClient(ip):
 	db.session.commit()
 	return True
 
-
 ########################################
 def getVisitorID(ip):
 	#print "\t \\--> Query for Player Name: <" + name + ">"
@@ -201,7 +228,6 @@ def getVisitorID(ip):
 	if query is not None:
 		return query.first()
 	return None
-
 
 ########################################
 def getClientList():
