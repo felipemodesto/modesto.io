@@ -1,7 +1,11 @@
 #!flask/bin/python
+
+############ IMPORTS
+
 from flask import Flask, Response, flash, session,make_response, render_template, redirect, url_for, request, jsonify, abort ,g
 from flask import current_app as app
 from flask_restful import Resource, Api
+from flask_cors import CORS, cross_origin
 from werkzeug.exceptions import HTTPException
 from datetime import *
 from app import *
@@ -10,8 +14,210 @@ from json2html import *
 import json
 import sys
 import requests
+import random
+import string
+
+#TODO: Make these editable
+gameColumns = 8
+gameRows = 12
+bombCount = 20
+
+CORS(app)
+
+############################
+#Representation of a tile for game construction purposes
+############################
+class TileOBJ:
+	#Element "Constructor"
+	def __init__(self, colVal, rowVal, tID):
+		self.tileType = "WATER"		#Updated Later
+		self.tileStatus = "HIDDEN"	#Updated during gameplay
+		self.columnValue = colVal
+		self.rowValue = rowVal
+		self.tileID = tID
+		self.tileIndex = (gameColumns*rowVal) + colVal
+		self.bombCount = 0			#Updated later :)
 
 
+############################
+#Function called to generate a random string
+############################
+def get_random_string(stringSize):
+	allchar = string.ascii_letters + string.digits
+	return "".join(random.choice(allchar) for x in range(stringSize))
+
+
+############################
+#Function called to generate an ID for a tile
+############################
+def getNameForTile(game,tileRow,tileColumn):
+	#
+	return game.gameID+"_tile_"+str( (game.columnCount*tileRow) + tileColumn)
+
+
+############################
+#Matrix Initialization. Called at server startup and if player wants to restart their game
+############################
+def createNewGame(mapRows, mapCols, bombCount):
+	print(">> Initializing New Game")
+
+	##Generating Random String that represents the game state
+	#FYI: If we get a repeated game key with the random string generated, i'm buying everyone beer, statistically speaking this won't ever happen :) (Baiting the dupe game key)
+	gameID = get_random_string(16)
+
+	##Creating new game
+	gameAddQuery = models.Game(gameID, mapRows, mapCols, bombCount)
+	db.session.add(gameAddQuery)
+	db.session.commit()
+
+	#Instantiating Game State Matrix
+	mineMatrix = [[TileOBJ(colVal,rowVal,(getNameForTile(gameAddQuery,rowVal,colVal))) for rowVal in range(gameRows)] for colVal in range(gameColumns)]
+
+	#Building Initial Game State
+	for bIndex in range(bombCount):
+		addedBomb = False
+		while not addedBomb:
+			curCol = random.randrange(gameColumns)
+			curRow = random.randrange(gameRows)
+			if mineMatrix[curCol][curRow].tileType != "BOMB":
+				mineMatrix[curCol][curRow].tileType = "BOMB"
+				addedBomb = True
+				#print("Bomb at:",curCol,curRow)
+
+	#Bomb at top left to facilitate debugging (Suicide Move)
+	#mineMatrix[0][0].tileType = "BOMB"
+
+	gameMatrix = "\n == GameState == \n\n "
+	#Creating Tile Objects in Database
+	for curRow in range(gameRows):
+		for curCol in range(gameColumns):
+			#Process Neighbourhood Statistics
+			neighbourhoodCount = 0
+			#LEFT
+			if (curCol > 0) and mineMatrix[curCol-1][curRow].tileType == "BOMB":
+				neighbourhoodCount+=1
+			#RIGHT
+			if (curCol < gameColumns-1) and mineMatrix[curCol+1][curRow].tileType == "BOMB":
+				neighbourhoodCount+=1
+			#TOP
+			if (curRow > 0) and mineMatrix[curCol][curRow-1].tileType == "BOMB":
+				neighbourhoodCount+=1
+			#BOTTOM
+			if (curRow < gameRows-1) and mineMatrix[curCol][curRow+1].tileType == "BOMB":
+				neighbourhoodCount+=1
+
+			if neighbourhoodCount > 0 and mineMatrix[curCol][curRow].tileType != "BOMB":
+				mineMatrix[curCol][curRow].tileType = "NUMBER"
+				gameMatrix = gameMatrix + str(neighbourhoodCount)
+			else:
+				if mineMatrix[curCol][curRow].tileType == "BOMB":
+					gameMatrix = gameMatrix + "B"
+					neighbourhoodCount = 0
+				else:
+					gameMatrix = gameMatrix + "W"
+
+			#
+			addTileQuery = models.Tile(
+				mineMatrix[curCol][curRow].tileID,
+				gameID,
+				mineMatrix[curCol][curRow].tileIndex,
+				curRow,
+				curCol,
+				mineMatrix[curCol][curRow].tileType,
+				mineMatrix[curCol][curRow].tileStatus,
+				neighbourhoodCount
+			)
+			db.session.add(addTileQuery)
+			db.session.commit()
+
+		gameMatrix = gameMatrix + "\n "
+	gameMatrix = gameMatrix + "\n"
+
+	#printing our game design to the console
+	print(gameMatrix)
+
+	return gameAddQuery
+
+
+############################
+#
+############################
+def RevealNeighboursOf(tile,game):
+	#Ignoring expansion on non-water tiles
+	if tile.tileType != "WATER":
+		return
+
+	#Calling moves that don't get processed as they are "free moves"
+	#For simplicity we call on all neighbours regardless if they have been freed
+
+	#BOTTOM
+	if tile.tileRow < game.rowCount - 1:
+		processMove(game.gameID,getNameForTile(game,tile.tileRow+1,tile.tileColumn),True)
+	#TOP
+	if tile.tileRow > 0:
+		processMove(game.gameID,getNameForTile(game,tile.tileRow-1,tile.tileColumn),True)
+	#RIGHT
+	if tile.tileColumn < game.columnCount - 1:
+		processMove(game.gameID,getNameForTile(game,tile.tileRow,tile.tileColumn+1),True)
+	#LEFT
+	if tile.tileColumn > 0:
+		processMove(game.gameID,getNameForTile(game,tile.tileRow,tile.tileColumn-1),True)
+
+
+############################
+# Function used for general processing of a move on a specific tile
+############################
+def processMove(gameID, tileID, isSafeMove):
+	#Fetching Tile from DB (Fetching on unique field, should only get 1 object)
+	#Also fetching the game to evaluate
+	tileEntry = None
+	tileQuery = models.Tile.query.filter(models.Tile.tileID==tileID)
+	if tileQuery is not None:
+		tileEntry = tileQuery.first()
+	else:
+		return False
+
+	gameEntry = None
+	gameQuery = models.Game.query.filter(models.Game.gameID==gameID)
+	if gameQuery is not None:
+		gameEntry = gameQuery.first()
+	else:
+		return False
+
+	#Avoiding Loop
+	if tileEntry.tileStatus != "HIDDEN":
+		return False
+
+	#Updating status of tile
+	if tileEntry.tileType == "BOMB":
+		#Avoiding killing ourselves if we're unlocking neighbour tiles
+		if isSafeMove == True:
+			return False
+
+		#Updating Game Over Status
+		tileEntry.tileStatus = "KILLED"
+		gameEntry.gameOver = True
+		db.session.commit()
+
+		#Updating the status of all tiles as revealed as the player lost the game
+		multipleTileQuery = models.Tile.query.filter(models.Tile.gameID==gameID)
+		if multipleTileQuery is not None:
+			for tile in multipleTileQuery:
+				tile.tileStatus = "REVEALED"
+			db.session.commit()
+		else:
+			return False
+
+	else:
+		tileEntry.tileStatus = "REVEALED"
+		gameEntry.gameOver = True
+		db.session.commit()
+
+		#Try to reveal neighbour tiles to a water
+		if tileEntry.tileType == "WATER":
+			RevealNeighboursOf(tileEntry,gameEntry)
+
+	return tileEntry
 
 
 ######################################################
@@ -31,7 +237,6 @@ import requests
 ######################################################
 
 heartrateRemovalTime = 60 * 30	#X Minutes until removal (X * 60)
-
 
 
 ########################################
@@ -68,7 +273,7 @@ def addHeart(rate,accuracy,ip,hashkey,deviceID):
 		#print("Bad Data",rate,accuracy)
 		return False
 
-	heartInfo = getHeart( hashkey, deviceID)
+	heartInfo = getHeart(hashkey, deviceID)
 	if heartInfo != None:
 		timeDif = heartInfo.time - datetime.utcnow()
 		print("Time Difference:",timeDif)
@@ -85,7 +290,6 @@ def addHeart(rate,accuracy,ip,hashkey,deviceID):
 	db.session.add(query)
 	db.session.commit()
 	return True
-
 
 ########################################
 def getHeart(hashkey,deviceID):
@@ -249,6 +453,119 @@ def getClientList():
 		return query
 	return None
 
+########################################
+def processMinesweeperPost(request):
+	#Treating POST events (Get new game, Submit game move)
+	if request.method == "POST":
+
+		#Loading Content of Request
+		incommingMessage = json.loads(request.get_data())
+
+		##################
+		#Treating New Game Requests
+		if "event" in incommingMessage and incommingMessage["event"] == "newgame":
+			#print(">> Treating New Game Event")
+
+			#Full on creating a new game, we don't have user subsystems so this should be fine
+			newGame = createNewGame(gameRows,gameColumns,bombCount)
+
+			#Building response based on interpretation of the validity of the move
+			response = jsonify({
+				'gameID' 			:	newGame.gameID,
+				'rowCount' 			:	newGame.rowCount,
+				'columnCount' 		:	newGame.columnCount,
+				'hiddenBlockCount' 	:	newGame.hiddenBlockCount,
+			})
+			return response
+
+		#################
+		#Treating Move Submission Requests
+		if "event" in incommingMessage and incommingMessage["event"] == "move":
+			#print(">> Treating Move Event")
+
+			#Checking if request has the info needed
+			if "tileID" in incommingMessage and "gameID" in incommingMessage and "tileIndex" in incommingMessage:
+
+				tileIndex = int(incommingMessage["tileIndex"])
+				tileID = incommingMessage["tileID"]
+				gameID = incommingMessage["gameID"]
+
+				#Checking if the request is for a valid location
+				if tileIndex > gameColumns*gameRows:
+					return "Bad Request - Tile Index out of range"
+
+				#Processing game move according to game rules
+				replyToMove = processMove(gameID,tileID,False)
+
+				#Checking if the move resulted in some sort of error & basically just ignoring it if it caused an error
+				if replyToMove == False:
+					return "Bad Request - Bad Move"
+
+				#Building response based on interpretation of the validity of the move
+				response = jsonify({
+					'tileType'		:	replyToMove.tileType,
+					'tileStatus'	:	replyToMove.tileStatus,
+					'tileNeighbours':	replyToMove.tileNeighbours,
+				})
+				return response
+			#Generic response for invalid move event
+			return "Bad Request - Missing Parameters"
+
+		##################
+		#Treating Game State Recall Requests
+		if "event" in incommingMessage and incommingMessage["event"] == "recall":
+			#print(">> Treating Recall Event")
+
+			#Checking if request has the info needed
+			if "gameID" in incommingMessage:
+				gameID = incommingMessage["gameID"]
+
+				#Fetching Game from database
+				gameEntry = None
+				gameQuery = models.Game.query.filter(models.Game.gameID==gameID)
+				if gameQuery is not None:
+					gameEntry = gameQuery.first()
+				else:
+					return False
+
+				tileEntryList = []
+				#Checking if the game exists
+				query = models.Game.query.filter(models.Game.gameID==gameID)
+				if query is not None:
+
+					#Fetching moves that are revealed for this game
+					tileQuery = models.Tile.query.filter(models.Tile.gameID==gameID).all()
+
+					tileEntryList = []
+					for tile in tileQuery:
+						if tile.tileStatus == "REVEALED":
+							tileEntryList.append({
+								'tileID' 		: tile.tileID,
+								'gameID'		: tile.gameID,
+								'tileIndex'		: tile.tileIndex,
+								'tileRow'		: tile.tileRow,
+								'tileColumn' 	: tile.tileColumn,
+								'tileType' 		: tile.tileType,
+								'tileStatus' 	: tile.tileStatus,
+								'tileNeighbours': tile.tileNeighbours
+							})
+				else:
+					return False
+
+				#Building response with the game state (visible tiles)
+				response = jsonify({
+					'gameID' 			:	gameEntry.gameID,
+					'rowCount' 			:	gameEntry.rowCount,
+					'columnCount' 		:	gameEntry.columnCount,
+					'hiddenBlockCount' 	:	gameEntry.hiddenBlockCount,
+					'tileList'			:	tileEntryList
+				})
+				return response
+			#Generic response for invalid move event
+			return "Bad Request - Missing Parameters"
+
+		print("ERROR: NO TREATMENT")
+		return False
 
 ######################################## Default Page Reroute to 404 template
 @app.route('/', defaults={'path': ''})
@@ -264,13 +581,11 @@ def page_not_found(e):
 	addVisit(request)
 	return render_template('404.html'), 404
 
-
 ########################################
 @app.route('/', methods=['GET'])
 def home():
 	addVisit(request)
 	return render_template('index.html',error=None)
-
 
 ########################################
 @app.route('/index', methods=['GET'])
@@ -305,6 +620,7 @@ def stats():
 ########################################
 @app.route('/heart', methods=['GET','POST'])
 def heart():
+	#pass
 	return heart_code("")
 
 ########################################
@@ -375,15 +691,19 @@ def gallery():
 	return render_template('gallery.html',error=None)
 
 ########################################
-@app.route('/minesweeper', methods=['GET'])
+@app.route('/minesweeper', methods=['GET','POST'])
+@cross_origin()
 def minesweeper():
 	if request.method == 'GET':
 		addVisit(request)
 		return render_template('minesweeper.html',error=None)
 
 	if request.method == 'POST':
-		#TODO: Replace with implementation made for the programming challenge
-		pass
+		response = processMinesweeperPost(request)
+		if response == False:
+			return "ERROR"
+		else:
+			return response
 
 ######################################################
 ########################## Legacy Personal Stuff Below

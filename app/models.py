@@ -27,6 +27,7 @@ class Client(db.Model):
 		self.lastAccess = datetime.utcnow()
 		self.accessCount = 1
 
+
 ################################
 #List of all Requests ever made to server
 class Visit(db.Model):
@@ -72,18 +73,18 @@ class Heartrate(db.Model):
 # Description of the game state for a specific game being played
 ############################
 class Game(db.Model):
-	__tablename__ = "Game"
+	__tablename__ = "game"
 	gameID				= db.Column(db.String(64),unique=True,primary_key=True)
 	rowCount 			= db.Column(db.Integer,unique=False)
 	columnCount 		= db.Column(db.Integer,unique=False)
 	gameOver			= db.Column(db.Boolean,unique=False)
 	hiddenBlockCount	= db.Column(db.Integer,unique=False)
 
-	def __init__(self, gameID, rowCount, columnCount, gameOver, hiddenBlockCount):
+	def __init__(self, gameID, rowCount, columnCount, hiddenBlockCount):
 		self.gameID				= gameID
-		self.rowCount 			= rowCount 
+		self.rowCount 			= rowCount
 		self.columnCount 		= columnCount
-		self.gameOver			= gameOver
+		self.gameOver			= False
 		self.hiddenBlockCount	= hiddenBlockCount
 
 
