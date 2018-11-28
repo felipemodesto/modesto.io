@@ -573,6 +573,8 @@ def processMinesweeperPost(request):
 				gameQuery = models.Game.query.filter(models.Game.gameID==gameID)
 				if gameQuery is not None:
 					gameEntry = gameQuery.first()
+					if (gameEntry == None):
+						return False
 				else:
 					return False
 
@@ -612,8 +614,7 @@ def processMinesweeperPost(request):
 			#Generic response for invalid move event
 			return "Bad Request - Missing Parameters"
 
-		print("ERROR: NO TREATMENT")
-		return False
+		return  "Unknown Request Type"
 
 ######################################## Default Page Reroute to 404 template
 @app.route('/', defaults={'path': ''})
@@ -742,7 +743,14 @@ def gallery():
 @app.route('/minesweeper', methods=['GET','POST'])
 @cross_origin()
 @crossdomain(origin='*')
-def minesweeper():
+def newsweeper():
+	return minesweeper("")
+
+########################################
+@app.route('/minesweeper/<gameID>', methods=['GET','POST'])
+@cross_origin()
+@crossdomain(origin='*')
+def minesweeper(gameID):
 	if request.method == 'GET':
 		addVisit(request)
 		return render_template('minesweeper.html',error=None)
