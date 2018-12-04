@@ -19,8 +19,8 @@ import random
 import string
 
 #TODO: Make these editable
-gameColumns = 8
-gameRows = 12
+gameColumns = 7
+gameRows = 13
 bombCount = 20
 
 
@@ -447,21 +447,24 @@ def addVisit(request):
 
 	print("\t \\--> Logging Visit from [" + str(ip) + "]. My IP: [" + myIP + "]")
 
-	client = getVisitorID(ip)
-	reply = False
-	if (client == None):
-		#print("Logging NEW user: " + str(ip))
-		reply = addClient(ip)
-	else:
-		#print("Logging OLD user: " + str(ip) + "\tUID: <" + str(client) + ">")
-		reply = updateClient(ip)
+	try:
+		client = getVisitorID(ip)
+		reply = False
+		if (client == None):
+			#print("Logging NEW user: " + str(ip))
+			reply = addClient(ip)
+		else:
+			#print("Logging OLD user: " + str(ip) + "\tUID: <" + str(client) + ">")
+			reply = updateClient(ip)
 
-	if (reply == True):
-		#Saving Visit to DB
-		query = models.Visit(ip)
-		#print("Saving Visit IP: [" + str(query.ip) + "]  ID: [" + str(query.id) + "]")
-		db.session.add(query)
-		db.session.commit()
+		if (reply == True):
+			#Saving Visit to DB
+			query = models.Visit(ip)
+			#print("Saving Visit IP: [" + str(query.ip) + "]  ID: [" + str(query.id) + "]")
+			db.session.add(query)
+			db.session.commit()
+	except:
+		pass
 
 ########################################
 def addClient(ip):

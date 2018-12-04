@@ -37,10 +37,14 @@ class Visit(db.Model):
 	time = db.Column('time' , db.DateTime)
 
 	def __init__(self , ip):
-		bigIdVisit = Visit.query.all()[len(Visit.query.all())-1]
-		self.id = 	bigIdVisit.id + 1
-		self.ip = ip
-		self.time = datetime.utcnow()
+		try:
+			visitList = Visit.query.all()
+			bigIdVisit = visitList[len(visitList)-1]
+			self.id = 	bigIdVisit.id + 1
+			self.ip = ip
+			self.time = datetime.utcnow()
+		except:
+			pass
 
 	def __pref__(self):
 		return '<Visit %r>' %(self.ip)
