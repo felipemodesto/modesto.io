@@ -10,13 +10,14 @@ from werkzeug.exceptions import HTTPException
 from functools import update_wrapper
 from datetime import *
 from app import *
-from pubg import *
+#from pubg import *
 from json2html import *
 import json
 import sys
 import requests
 import random
 import string
+from six import string_types
 
 #TODO: Make these editable
 gameColumns = 8
@@ -29,9 +30,9 @@ def crossdomain(origin=None, methods=None, headers=None,
                 automatic_options=True):
     if methods is not None:
         methods = ', '.join(sorted(x.upper() for x in methods))
-    if headers is not None and not isinstance(headers, basestring):
+    if headers is not None and not isinstance(headers, string_types):
         headers = ', '.join(x.upper() for x in headers)
-    if not isinstance(origin, basestring):
+    if not isinstance(origin, string_types):
         origin = ', '.join(origin)
     if isinstance(max_age, timedelta):
         max_age = max_age.total_seconds()
@@ -289,7 +290,7 @@ heartrateRemovalTime = 60 * 30	#X Minutes until removal (X * 60)
 
 ########################################
 class VisitorData(Resource):
-    def get(self, visitorIP):
+	def get(self, visitorIP):
 		query = models.Client.query.filter(models.Client.ip==visitorIP)
 		if query is not None:
 			visitList = models.Visit.query.filter(models.Visit.ip==str(query.first().ip)).all()
@@ -817,4 +818,4 @@ def pubg():
 #if __name__ == '__main__':
 #	app.run(debug=True, port=8000)
 
-print ">> Site File Loaded."
+print(">> Site File Loaded.")

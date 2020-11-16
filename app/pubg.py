@@ -111,4 +111,4 @@ def fetchTelemetry(mID = MatchID, pKey = PrivateKey):
 	print("BLABLA")
 
 
-print ">> PUBG File Loaded."
+print(">> PUBG File Loaded.")

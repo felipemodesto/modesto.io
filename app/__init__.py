@@ -1,15 +1,15 @@
 from flask import Flask
 import os
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, login_user, logout_user, current_user, login_required
+#from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 app = Flask(__name__, static_folder='static', static_url_path='')
 app.config.from_object('config')
 
 
 db = SQLAlchemy(app)
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'
+#login_manager = LoginManager()
+#login_manager.init_app(app)
+#login_manager.login_view = 'login'
 
 #from statistics import startStatistics
 from app import models, site
@@ -23,4 +23,4 @@ if not app.debug and os.environ.get('HEROKU') is None:
 	app.logger.addHandler(file_handler)
 	app.logger.setLevel(logging.INFO)
 
-print ">> __init__ File Loaded."
+print(">> __init__ File Loaded.")

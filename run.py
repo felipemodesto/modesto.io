@@ -27,4 +27,4 @@ if __name__ == "__main__":
     #app.run(host='0.0.0.0',port=port, use_reloader=True,threaded=True,ssl_context=context)
     app.run(host='0.0.0.0',port=port, use_reloader=True,threaded=True)
 
-print ">> Run File Loaded."
+print(">> Run File Loaded.")

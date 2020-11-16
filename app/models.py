@@ -111,4 +111,4 @@ class Tile(db.Model):
 		self.tileStatus 	= tileStatus
 		self.tileNeighbours	= tileNeighbours
 
-print ">> Models File Loaded."
+print(">> Models File Loaded.")
