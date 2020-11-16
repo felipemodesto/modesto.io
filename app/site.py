@@ -20,8 +20,8 @@ import string
 from six import string_types
 
 #TODO: Make these editable
-gameColumns = 8
-gameRows = 12
+gameColumns = 7
+gameRows = 13
 bombCount = 20
 
 
@@ -448,21 +448,24 @@ def addVisit(request):
 
 	print("\t \\--> Logging Visit from [" + str(ip) + "]. My IP: [" + myIP + "]")
 
-	client = getVisitorID(ip)
-	reply = False
-	if (client == None):
-		#print("Logging NEW user: " + str(ip))
-		reply = addClient(ip)
-	else:
-		#print("Logging OLD user: " + str(ip) + "\tUID: <" + str(client) + ">")
-		reply = updateClient(ip)
+	try:
+		client = getVisitorID(ip)
+		reply = False
+		if (client == None):
+			#print("Logging NEW user: " + str(ip))
+			reply = addClient(ip)
+		else:
+			#print("Logging OLD user: " + str(ip) + "\tUID: <" + str(client) + ">")
+			reply = updateClient(ip)
 
-	if (reply == True):
-		#Saving Visit to DB
-		query = models.Visit(ip)
-		#print("Saving Visit IP: [" + str(query.ip) + "]  ID: [" + str(query.id) + "]")
-		db.session.add(query)
-		db.session.commit()
+		if (reply == True):
+			#Saving Visit to DB
+			query = models.Visit(ip)
+			#print("Saving Visit IP: [" + str(query.ip) + "]  ID: [" + str(query.id) + "]")
+			db.session.add(query)
+			db.session.commit()
+	except:
+		pass
 
 ########################################
 def addClient(ip):
@@ -574,6 +577,8 @@ def processMinesweeperPost(request):
 				gameQuery = models.Game.query.filter(models.Game.gameID==gameID)
 				if gameQuery is not None:
 					gameEntry = gameQuery.first()
+					if (gameEntry == None):
+						return False
 				else:
 					return False
 
@@ -613,8 +618,7 @@ def processMinesweeperPost(request):
 			#Generic response for invalid move event
 			return "Bad Request - Missing Parameters"
 
-		print("ERROR: NO TREATMENT")
-		return False
+		return  "Unknown Request Type"
 
 ######################################## Default Page Reroute to 404 template
 @app.route('/', defaults={'path': ''})
@@ -743,7 +747,14 @@ def gallery():
 @app.route('/minesweeper', methods=['GET','POST'])
 @cross_origin()
 @crossdomain(origin='*')
-def minesweeper():
+def newsweeper():
+	return minesweeper("")
+
+########################################
+@app.route('/minesweeper/<gameID>', methods=['GET','POST'])
+@cross_origin()
+@crossdomain(origin='*')
+def minesweeper(gameID):
 	if request.method == 'GET':
 		addVisit(request)
 		return render_template('minesweeper.html',error=None)
