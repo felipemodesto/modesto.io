@@ -1,1 +1,1 @@
-web: python run.py -p 5000 runserver
+web: python3 run.py -p 5000 runserver
